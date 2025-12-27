@@ -43,7 +43,7 @@
             position: absolute;
             width: 95vw;
             max-width: 800px;
-            padding: 6vw 4vw;
+            padding: 6vw 4vw 7vw 4vw;
             background: rgba(255, 255, 255, 0.509);
             backdrop-filter: blur(10px);
             border-radius: 20px;
@@ -138,8 +138,12 @@
 
         @media (max-width: 600px) {
             .step {
-                padding: 5vw 2vw;
+                padding: 5vw 2vw 16vw 2vw;
                 max-width: 98vw;
+                min-height: 80vh;
+                display: flex;
+                flex-direction: column;
+                justify-content: flex-start;
             }
             .reason-card {
                 padding: 12px;
@@ -150,6 +154,18 @@
             }
             h1, h2, h3 {
                 font-size: 1.2em !important;
+            }
+            .btn {
+                width: 100%;
+                max-width: 320px;
+                margin-left: auto;
+                margin-right: auto;
+                margin-bottom: 0;
+                position: fixed;
+                left: 0;
+                right: 0;
+                bottom: 18px;
+                z-index: 1000;
             }
         }
         }
@@ -275,8 +291,7 @@
                     <div class="reason-card">
                         <div class="emoji text-3xl">✨</div>
                         <h3 class="text-xl font-bold mb-2 text-pink-600">Your Kindness</h3>
-                        <p class="text-gray-700">The way you care about others is truly inspiring. You have the biggest
-                            heart.</p>
+                        <p class="text-gray-700">The way you care about others is truly inspiring. You have the biggest heart.</p>
                     </div>
                     <div class="reason-card">
                         <div class="emoji text-3xl">😊</div>
