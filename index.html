@@ -14,15 +14,15 @@
             margin: 0;
             overflow: hidden;
             font-family: 'Inter', sans-serif;
-            height: 100vh;
+            min-height: 100vh;
             touch-action: manipulation;
-             background: linear-gradient(135deg, #f9a8d4, #f3e8ff);
+            background: linear-gradient(135deg, #f9a8d4, #f3e8ff);
         }
 
         #app {
             position: relative;
-            width: 100%;
-            height: 100%;
+            width: 100vw;
+            min-height: 100vh;
             overflow: hidden;
         }
 
@@ -30,20 +30,20 @@
             position: relative;
             z-index: 10;
             width: 100%;
-            height: 100%;
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            padding: 20px;
+            padding: 5vw 2vw;
             box-sizing: border-box;
         }
 
         .step {
             position: absolute;
-            width: 100%;
+            width: 95vw;
             max-width: 800px;
-            padding: 40px;
+            padding: 6vw 4vw;
             background: rgba(255, 255, 255, 0.509);
             backdrop-filter: blur(10px);
             border-radius: 20px;
@@ -72,6 +72,8 @@
             margin-top: 20px;
             box-shadow: 0 4px 15px rgba(236, 72, 153, 0.3);
             transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
         }
 
         .btn:hover {
@@ -81,6 +83,75 @@
 
         .btn:active {
             transform: translateY(0);
+        }
+
+        /* Button Ripple Effect */
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            transform: scale(0);
+            animation: ripple 0.6s linear;
+            background: rgba(255,255,255,0.5);
+            pointer-events: none;
+        }
+        @keyframes ripple {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+
+        /* Sparkle Animation for Heading */
+        .sparkle {
+            position: absolute;
+            pointer-events: none;
+            width: 18px;
+            height: 18px;
+            background: radial-gradient(circle, #fff 60%, #f9a8d4 100%);
+            border-radius: 50%;
+            opacity: 0.8;
+            animation: sparkle 1.2s linear forwards;
+        }
+        @keyframes sparkle {
+            0% { opacity: 0.8; transform: scale(0.5); }
+            50% { opacity: 1; transform: scale(1.2); }
+            100% { opacity: 0; transform: scale(0.1); }
+        }
+
+        /* Balloons */
+        .balloon {
+            position: absolute;
+            bottom: -120px;
+            width: 40px;
+            height: 60px;
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            background: linear-gradient(135deg, #f43f5e, #f9a8d4);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+            z-index: 20;
+            animation: floatBalloon 6s linear infinite;
+        }
+        @keyframes floatBalloon {
+            0% { transform: translateY(0) scale(1); opacity: 1; }
+            80% { opacity: 1; }
+            100% { transform: translateY(-110vh) scale(1.1); opacity: 0; }
+        }
+
+        @media (max-width: 600px) {
+            .step {
+                padding: 5vw 2vw;
+                max-width: 98vw;
+            }
+            .reason-card {
+                padding: 12px;
+                margin: 6px;
+            }
+            .emoji {
+                font-size: 2.2rem;
+            }
+            h1, h2, h3 {
+                font-size: 1.2em !important;
+            }
+        }
         }
 
         .text-gradient {
@@ -180,7 +251,7 @@
             <!-- Step 1: Initial Reveal -->
             <div class="step active" id="step1">
                 <div class="emoji heart-beat">❤️</div>
-                <h1 class="text-4xl md:text-5xl font-bold mb-6 text-gradient">Hey Beautiful</h1>
+                <h1 class="text-4xl md:text-5xl font-bold mb-6 text-gradient sparkle-heading" style="position:relative;">Hey Beautiful</h1>
                 <p class="text-xl text-gray-700 mb-8">I made something special for you...</p>
                 <button class="btn" id="start-btn">Let's Begin</button>
             </div>
@@ -188,6 +259,7 @@
             <!-- Step 2: Birthday Message -->
             <div class="step" id="step2">
                 <div class="emoji">🎉</div>
+                <div id="balloon-container"></div>
                 <h2 class="text-3xl md:text-4xl font-bold mb-6 text-gradient">Happy Birthday!</h2>
                 <p class="text-lg text-gray-700 mb-6">
                     On your special day, I want you to know how amazing you are. Your smile brightens my world, your
@@ -253,6 +325,48 @@
     </div>
 
     <script>
+                // Confetti on page load (visit)
+                window.addEventListener('DOMContentLoaded', () => {
+                    setTimeout(() => {
+                        confetti({
+                            particleCount: 120,
+                            spread: 80,
+                            origin: { y: 0.5 },
+                            colors: ['#ff0000', '#ff69b4', '#ff1493', '#ffc0cb']
+                        });
+                    }, 400);
+                });
+
+                // Sparkle effect for heading
+                function sparkleHeading() {
+                    const heading = document.querySelector('.sparkle-heading');
+                    if (!heading) return;
+                    const rect = heading.getBoundingClientRect();
+                    for (let i = 0; i < 8; i++) {
+                        const sparkle = document.createElement('span');
+                        sparkle.className = 'sparkle';
+                        sparkle.style.left = Math.random() * (rect.width - 18) + 'px';
+                        sparkle.style.top = Math.random() * (rect.height - 18) + 'px';
+                        heading.appendChild(sparkle);
+                        setTimeout(() => sparkle.remove(), 1200);
+                    }
+                }
+                setInterval(sparkleHeading, 1800);
+
+                // Balloons for birthday step
+                function showBalloons() {
+                    const balloonContainer = document.getElementById('balloon-container');
+                    if (!balloonContainer) return;
+                    balloonContainer.innerHTML = '';
+                    for (let i = 0; i < 8; i++) {
+                        const balloon = document.createElement('div');
+                        balloon.className = 'balloon';
+                        balloon.style.left = Math.random() * 90 + '%';
+                        balloon.style.background = `linear-gradient(135deg, hsl(${Math.random()*360},80%,70%), #f9a8d4)`;
+                        balloon.style.animationDelay = (Math.random() * 2) + 's';
+                        balloonContainer.appendChild(balloon);
+                    }
+                }
         // Three.js Heart Background
         const container = document.getElementById('canvas-container');
         const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
@@ -394,6 +508,13 @@
             if (stepNumber === totalSteps) {
                 document.getElementById('confetti-btn').classList.add('animate-pulse');
             }
+            // Balloons on birthday step
+            if (stepNumber === 2) {
+                showBalloons();
+            } else {
+                const balloonContainer = document.getElementById('balloon-container');
+                if (balloonContainer) balloonContainer.innerHTML = '';
+            }
         }
 
         // Button event listeners
@@ -418,7 +539,7 @@
         });
 
         // Confetti button
-        document.getElementById('confetti-btn').addEventListener('click', () => {
+        document.getElementById('confetti-btn').addEventListener('click', (e) => {
             // Standard confetti
             confetti({
                 particleCount: 150,
@@ -472,6 +593,20 @@
                     duration: 3,
                     ease: "power1.out"
                 });
+            });
+        });
+
+        // Button ripple effect
+        document.querySelectorAll('.btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                const circle = document.createElement('span');
+                circle.className = 'ripple';
+                const rect = btn.getBoundingClientRect();
+                circle.style.width = circle.style.height = Math.max(rect.width, rect.height) + 'px';
+                circle.style.left = (e.clientX - rect.left - rect.width/2) + rect.width/2 + 'px';
+                circle.style.top = (e.clientY - rect.top - rect.height/2) + rect.height/2 + 'px';
+                btn.appendChild(circle);
+                setTimeout(() => circle.remove(), 600);
             });
         });
 
